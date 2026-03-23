@@ -1,0 +1,68 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
+import { cookies } from "next/headers";
+import { AuthProvider } from "@/components/AuthContextProvider/contextProvider";
+import { ThemeProvider } from "@/components/TheContextProvider/ThemeProvider";
+import { ToastProvider } from "@/components/TheContextProvider/ToastProvider";
+
+export const metadata: Metadata = {
+  title: "Wei_tours",
+  description: "Never stop exploring",
+};
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get("jwt")?.value;
+  let user = null;
+  if (cookie) {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
+    try {
+      const res = await fetch(`${apiUrl}/users/me`, {
+        headers: { Cookie: `jwt=${cookie}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        user = data.data?.user ?? null;
+      }
+    } catch {
+      user = null;
+    }
+  }
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('wei_tours_theme');
+                  var dark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  document.documentElement.classList.toggle('dark', dark);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen flex flex-col bg-linear-to-br from-emerald-50 via-green-50/50 to-natours/20 text-gray-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-gray-100">
+        <ThemeProvider>
+          <ToastProvider>
+            <AuthProvider user={user}>
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </AuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
