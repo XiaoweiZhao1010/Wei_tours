@@ -22,8 +22,8 @@ export default function UserHeader() {
           height={300}
           className="h-8 w-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
         />
-        <span className="hidden font-large text-gray-700 dark:text-gray-100 sm:inline">
-          {user.name.split(" ")[0].toUpperCase()}
+        <span className="hidden text-xl font-bold text-gray-500 dark:text-gray-700 sm:inline">
+          {user.name.split(" ")[0]}
         </span>
       </Link>
       <Link

@@ -36,7 +36,11 @@ export default async function RootLayout({
     }
   }
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className="min-h-screen bg-linear-to-br from-emerald-50 via-green-50/50 to-natours/20 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -52,13 +56,15 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-linear-to-br from-emerald-50 via-green-50/50 to-natours/20 text-gray-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-gray-100">
+      <body className="bg-transparent text-gray-900 dark:text-gray-100">
         <ThemeProvider>
           <ToastProvider>
             <AuthProvider user={user}>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <div className="grid min-h-dvh w-full grid-rows-[auto_1fr_auto]">
+                <Header />
+                <main className="min-h-0 dark:bg-gray-400">{children}</main>
+                <Footer />
+              </div>
             </AuthProvider>
           </ToastProvider>
         </ThemeProvider>

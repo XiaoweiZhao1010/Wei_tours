@@ -28,7 +28,7 @@ export default function Footer() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <footer className="relative border-gray-200 bg-white py-6 dark:border-gray-700 dark:bg-gray-900">
+    <footer className="relative border-gray-200 bg-white py-6 dark:border-gray-200 dark:bg-gray-400">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col items-center gap-4 border-t border-gray-200 py-6 dark:border-gray-700 sm:flex-row sm:justify-between">
           <span className="text-lg font-bold text-natours">Wei_tours</span>
@@ -39,10 +39,10 @@ export default function Footer() {
             className="flex items-center gap-2 rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-natours dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-natours"
             aria-label="Open menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5 dark:bg-gray-800" />
           </button>
         </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-800 dark:bg-gray-400">
           © {new Date().getFullYear()} by Xiaowei Zhao.
         </p>
       </div>
