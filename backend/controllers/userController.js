@@ -15,11 +15,10 @@ exports.updateMe = async (req, res, next) => {
     return next(
       new AppError(
         "This route is not for password updates. Please use /updatePassword instead",
-        400
-      )
+        400,
+      ),
     );
   }
-
   // Filter out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, "name", "email");
   // Update user document
@@ -33,6 +32,31 @@ exports.updateMe = async (req, res, next) => {
     updatedUser,
   });
 };
+exports.updateProfilePicture = async (req, res, next) => {
+  console.log(req.file);
+  if (!req.user) {
+    return next(new AppError("User not authenticated", 404));
+  }
+  if (!req.file) {
+    return next(new AppError("This route needs a file to proceed.", 400));
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      photo: req.file.filename,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  res.json({
+    status: "success",
+    data: updatedUser,
+  });
+};
+
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();

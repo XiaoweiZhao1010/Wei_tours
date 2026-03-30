@@ -1,3 +1,5 @@
 .vscode
 .DS_Store
-node_modules
+
+# Dependencies — all `node_modules` (root, client, backend, etc.)
+node_modules/

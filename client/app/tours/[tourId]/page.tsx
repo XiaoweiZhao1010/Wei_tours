@@ -154,6 +154,25 @@ export default async function TourPage({
                   </div>
                 </div>
 
+                <div className="mt-8 border-t border-gray-200 pt-8 dark:border-gray-700">
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    From
+                  </p>
+                  <p className="mb-5 text-3xl font-bold tabular-nums text-gray-900 dark:text-gray-100">
+                    ${tour.price}
+                    <span className="text-base font-semibold text-gray-500 dark:text-gray-400">
+                      {" "}
+                      / person
+                    </span>
+                  </p>
+                  <button
+                    type="button"
+                    className="w-full rounded-xl bg-natours py-3.5 text-center text-base font-semibold text-white shadow-md transition-colors hover:bg-natours-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-natours focus-visible:ring-offset-2 dark:ring-offset-gray-800"
+                  >
+                    Book now
+                  </button>
+                </div>
+
                 {tour.guides && tour.guides.length > 0 && (
                   <>
                     <h2 className="mb-6 mt-10 text-xl font-bold text-gray-900 dark:text-gray-100">

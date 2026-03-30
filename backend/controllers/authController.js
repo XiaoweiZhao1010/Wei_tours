@@ -19,6 +19,7 @@ const createSendToken = function createSendTokenFn(user, statusCode, res) {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+    secure: false,
   };
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true; // Set to true if using https
   res.cookie("jwt", token, cookieOptions);
@@ -28,7 +29,7 @@ const createSendToken = function createSendTokenFn(user, statusCode, res) {
 
   res.status(statusCode).json({
     status: "success",
-    // token,
+    token, // For Postman/debugging
     data: {
       user,
     },
@@ -87,6 +88,7 @@ exports.protect = async (req, res, next) => {
     );
   }
   // 2) Verify token
+  console.log("Authorization:", req.headers.authorization);
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
@@ -128,9 +130,13 @@ exports.forgotPassword = async (req, res, next) => {
   // Generate the random reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
-  // Send it to user's email
-  const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n If you didn't forget your password, please ignore this email!`;
+  // Send link to frontend reset page (set FRONTEND_URL in env, e.g. http://localhost:4000)
+  const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:3001").replace(
+    /\/$/,
+    "",
+  );
+  const resetPageUrl = `${frontendUrl}/resetPassword/${resetToken}`;
+  const message = `Forgot your password? Open this link to set a new password (valid for 10 minutes):\n\n${resetPageUrl}\n\nIf you did not request this, ignore this email.`;
   try {
     await sendEmail({
       email: user.email,

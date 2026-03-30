@@ -105,16 +105,26 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+          <div className="flex flex-col items-center md:flex-row md:items-center md:justify-between">
+            <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+              <Link
+                href="/forgotPassword"
+                className="font-medium text-natours hover:underline"
+              >
+                Forgot Password
+              </Link>
+            </p>
 
-          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              className="font-medium text-natours hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
+            <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
+                className="font-medium text-natours hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
         </div>
 
         <p className="mt-6 text-center">

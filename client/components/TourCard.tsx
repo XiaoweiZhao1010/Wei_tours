@@ -69,12 +69,20 @@ export default function TourCard({ tour }: { tour: Tour }) {
             </span>
           </div>
         </div>
-        <Link
-          href={`/tours/${tour._id}`}
-          className="mt-4 inline-block w-full rounded-lg bg-natours py-3 text-center font-semibold text-white transition-colors hover:bg-natours"
-        >
-          Details
-        </Link>
+        <div className="mt-4 flex gap-3">
+          <Link
+            href={`/tours/${tour._id}`}
+            className="flex-1 rounded-lg border-2 border-natours bg-transparent py-3 text-center text-sm font-semibold text-natours transition-colors hover:bg-natours/10 dark:hover:bg-natours/15"
+          >
+            Details
+          </Link>
+          <button
+            type="button"
+            className="flex-1 rounded-lg border-2 border-transparent bg-natours py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-natours-dark"
+          >
+            Book now
+          </button>
+        </div>
       </div>
     </article>
   );

@@ -21,10 +21,9 @@ export default async function RootLayout({
   const cookie = cookieStore.get("jwt")?.value;
   let user = null;
   if (cookie) {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
+    const apiOrigin = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     try {
-      const res = await fetch(`${apiUrl}/users/me`, {
+      const res = await fetch(`${apiOrigin}/api/v1/users/me`, {
         headers: { Cookie: `jwt=${cookie}` },
       });
       if (res.ok) {
