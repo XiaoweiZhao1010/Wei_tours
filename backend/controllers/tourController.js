@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const factory = require("./handlerFactory");
 const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 // const APIFeatures = require("../utils/apiFeatures");
 
 exports.aliasTour = (req, res, next) => {
@@ -16,7 +17,7 @@ exports.updateTour = factory.updateOne(Tour);
 exports.createTour = factory.createOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 
-exports.getTourStats = async (req, res, next) => {
+exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
       $match: { ratingsAverage: { $gte: 4.5 } },
@@ -45,9 +46,9 @@ exports.getTourStats = async (req, res, next) => {
       stats,
     },
   });
-};
+});
 
-exports.getMonthlyPlan = async (req, res, next) => {
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = +req.params.year;
   const plan = await Tour.aggregate([
     {
@@ -86,9 +87,9 @@ exports.getMonthlyPlan = async (req, res, next) => {
       plan,
     },
   });
-};
+});
 
-exports.getToursWithin = async (req, res, next) => {
+exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
   const [lat, lng] = latlng.split(",");
 
@@ -96,8 +97,8 @@ exports.getToursWithin = async (req, res, next) => {
     return next(
       new AppError(
         "Please provide latitude and longitude in the format lat, lng.",
-        400
-      )
+        400,
+      ),
     );
   }
   // Radius of the earth
@@ -113,16 +114,16 @@ exports.getToursWithin = async (req, res, next) => {
     results: tours.length,
     tours,
   });
-};
-exports.getDistances = async (req, res, next) => {
+});
+exports.getDistances = catchAsync(async (req, res, next) => {
   const { latlng, unit } = req.params;
   const [lat, lng] = latlng.split(",");
   if (!lat || !lng) {
     return next(
       new AppError(
         "Please provide latitude and longitude in the format lat, lng.",
-        400
-      )
+        400,
+      ),
     );
   }
   const distances = await Tour.aggregate([
@@ -147,4 +148,4 @@ exports.getDistances = async (req, res, next) => {
     status: "success",
     data: { distances },
   });
-};
+});

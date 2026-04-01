@@ -2,8 +2,9 @@ const Booking = require("../models/bookingModel");
 const Tour = require("../models/tourModel");
 const AppError = require("../utils/appError");
 const { getStripe } = require("../utils/stripe");
+const catchAsync = require("../utils/catchAsync");
 
-exports.getMyBookings = async (req, res, next) => {
+exports.getMyBookings = catchAsync(async (req, res, next) => {
   try {
     const bookings = await Booking.find({ user: req.user.id })
       .populate({
@@ -20,9 +21,9 @@ exports.getMyBookings = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
+});
 
-exports.createBooking = async (req, res, next) => {
+exports.createBooking = catchAsync(async (req, res, next) => {
   try {
     const { tourId } = req.body;
     if (!tourId) {
@@ -53,14 +54,14 @@ exports.createBooking = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
+});
 
 /**
  * POST body: { bookingId }
  * Returns { url, sessionId } — open `url` in the browser for Stripe Checkout.
  * Env: STRIPE_SECRET_KEY, FRONTEND_URL (optional CHECKOUT_SUCCESS_URL / CHECKOUT_CANCEL_URL, STRIPE_CURRENCY default usd).
  */
-exports.createCheckoutSession = async (req, res, next) => {
+exports.createCheckoutSession = catchAsync(async (req, res, next) => {
   try {
     const stripe = getStripe();
     if (!stripe) {
@@ -92,8 +93,7 @@ exports.createCheckoutSession = async (req, res, next) => {
     }
 
     const frontendBase = (
-      process.env.FRONTEND_URL ||
-      "http://127.0.0.1:3000"
+      process.env.FRONTEND_URL || "http://127.0.0.1:3000"
     ).replace(/\/$/, "");
     const successUrl =
       process.env.CHECKOUT_SUCCESS_URL ||
@@ -157,4 +157,4 @@ exports.createCheckoutSession = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
+});

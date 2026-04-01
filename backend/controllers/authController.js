@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
-
+const catchAsync = require("../utils/catchAsync");
 const sendEmail = require("../utils/email");
 
 const signToken = (id) =>
@@ -35,7 +35,7 @@ const createSendToken = function createSendTokenFn(user, statusCode, res) {
     },
   });
 };
-exports.signup = async (req, res, next) => {
+exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -45,7 +45,7 @@ exports.signup = async (req, res, next) => {
     role: req.body.role,
   });
   createSendToken(newUser, 201, res);
-};
+});
 
 exports.logout = (req, res) => {
   res.cookie("jwt", "loggedout", {
@@ -55,7 +55,7 @@ exports.logout = (req, res) => {
   res.status(200).json({ status: "success", message: "Logged out" });
 };
 
-exports.login = async (req, res, next) => {
+exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // Check if email and password are provided
   if (!email || !password) {
@@ -69,9 +69,9 @@ exports.login = async (req, res, next) => {
   }
 
   createSendToken(user, 200, res);
-};
+});
 
-exports.protect = async (req, res, next) => {
+exports.protect = catchAsync(async (req, res, next) => {
   // 1) Get token and check if it exists (from cookie or Authorization header)
   let token;
   if (
@@ -110,7 +110,7 @@ exports.protect = async (req, res, next) => {
   req.user = currentUser;
 
   next();
-};
+});
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
@@ -122,7 +122,7 @@ exports.restrictTo =
     }
     next();
   };
-exports.forgotPassword = async (req, res, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
   // Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -158,8 +158,8 @@ exports.forgotPassword = async (req, res, next) => {
       ),
     );
   }
-};
-exports.resetPassword = async (req, res, next) => {
+});
+exports.resetPassword = catchAsync(async (req, res, next) => {
   // Get user based on the token
   const hashedToken = crypto
     .createHash("sha256")
@@ -182,9 +182,9 @@ exports.resetPassword = async (req, res, next) => {
   await user.save(); // Save the updated user
   // Log the user in, send JWT
   createSendToken(user, 200, res);
-};
+});
 
-exports.updatePassword = async (req, res, next) => {
+exports.updatePassword = catchAsync(async (req, res, next) => {
   // Get user from collection
   const user = await User.findById(req.user.id).select("+password");
   const { currentPassword, newPassword, newPasswordConfirm } = req.body;
@@ -200,4 +200,4 @@ exports.updatePassword = async (req, res, next) => {
   await user.save();
   // log user in, send JWT
   createSendToken(user, 200, res);
-};
+});

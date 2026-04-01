@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const factory = require("./handlerFactory");
+const catchAsync = require("../utils/catchAsync");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -9,7 +10,7 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
-exports.updateMe = async (req, res, next) => {
+exports.updateMe = catchAsync(async (req, res, next) => {
   //Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -31,8 +32,8 @@ exports.updateMe = async (req, res, next) => {
     status: "success",
     updatedUser,
   });
-};
-exports.updateProfilePicture = async (req, res, next) => {
+});
+exports.updateProfilePicture = catchAsync(async (req, res, next) => {
   console.log(req.file);
   if (!req.user) {
     return next(new AppError("User not authenticated", 404));
@@ -55,7 +56,7 @@ exports.updateProfilePicture = async (req, res, next) => {
     status: "success",
     data: updatedUser,
   });
-};
+});
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
@@ -73,10 +74,10 @@ exports.getAllUsers = factory.getAll(User); // For admin only
 exports.deleteUser = factory.deleteOne(User); // For admin only
 exports.updateUser = factory.updateOne(User); // For admin only
 // Do not delete user, set active to false, for user to deactivate their account
-exports.deleteMe = async (req, res, next) => {
+exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({
     status: "success",
     data: null,
   });
-};
+});
