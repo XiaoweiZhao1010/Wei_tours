@@ -1,3 +1,7 @@
+// Dev tools (e.g. pino transport / nodemon) can register many `exit` listeners on internal emitters.
+const { EventEmitter } = require("events");
+EventEmitter.defaultMaxListeners = 20;
+
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 

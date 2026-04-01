@@ -40,7 +40,7 @@ const reviewSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 reviewSchema.pre(/^find/, function (next) {

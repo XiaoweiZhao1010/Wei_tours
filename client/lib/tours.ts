@@ -10,6 +10,8 @@ export interface TourReview {
   review: string;
   rating: number;
   user?: { name: string; photo?: string };
+  /** API schema field name */
+  createAt?: string;
   createdAt?: string;
 }
 
@@ -78,5 +80,41 @@ export async function getTour(slug: string): Promise<Tour | null> {
   } catch (err) {
     console.error(err);
     return null;
+  }
+}
+
+export type TourReviewsResult = {
+  reviews: TourReview[];
+  page: number;
+  limit: number;
+  hasMore: boolean;
+};
+
+export async function getTourReviews(
+  tourId: string,
+  page: number = 1,
+  limit: number = 6,
+): Promise<TourReviewsResult> {
+  const safePage = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
+  const safeLimit =
+    Number.isFinite(limit) && limit >= 1 ? Math.min(100, Math.floor(limit)) : 6;
+  try {
+    const res = await fetch(
+      `${API_BASE}/tours/${encodeURIComponent(tourId)}/reviews?page=${safePage}&limit=${safeLimit}`,
+      {
+        cache: "no-store",
+        method: "GET",
+        credentials: "include",
+      },
+    );
+    if (!res.ok) {
+      return { reviews: [], page: safePage, limit: safeLimit, hasMore: false };
+    }
+    const data = await res.json();
+    const reviews = (data.data?.docs ?? []) as TourReview[];
+    const hasMore = reviews.length === safeLimit;
+    return { reviews, page: safePage, limit: safeLimit, hasMore };
+  } catch {
+    return { reviews: [], page: safePage, limit: safeLimit, hasMore: false };
   }
 }

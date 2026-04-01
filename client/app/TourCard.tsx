@@ -1,12 +1,12 @@
-import { Tour, getTourImageUrl, formatStartDate, getSlug } from "@/lib/tours";
+import { Tour, getTourImageUrl, formatStartDate } from "@/lib/tours";
 import { MapPin, Calendar, Flag, Users } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import BookTourButton from "@/components/tourpage/BookTourButton";
 
 export default function TourCard({ tour }: { tour: Tour }) {
   const stops = tour.locations?.length ?? 0;
   const dateStr = formatStartDate(tour.startDates?.[0]);
-  // const slug = tour.slug ?? getSlug(tour.name);
 
   return (
     <article className="natours-card group overflow-hidden rounded-2xl bg-white shadow-lg transition-transform hover:shadow-xl dark:bg-gray-800 dark:border dark:border-gray-700">
@@ -72,16 +72,16 @@ export default function TourCard({ tour }: { tour: Tour }) {
         <div className="mt-4 flex gap-3">
           <Link
             href={`/tours/${tour._id}`}
-            className="flex-1 rounded-lg border-2 border-natours bg-transparent py-3 text-center text-sm font-semibold text-natours transition-colors hover:bg-natours/10 dark:hover:bg-natours/15"
+            className="inline-flex min-h-11 flex-1 min-w-0 items-center justify-center rounded-lg border-2 border-natours bg-transparent py-3 text-center text-sm font-semibold text-natours transition-colors hover:bg-natours/10 dark:hover:bg-natours/15"
           >
             Details
           </Link>
-          <button
-            type="button"
-            className="flex-1 rounded-lg border-2 border-transparent bg-natours py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-natours-dark"
-          >
-            Book now
-          </button>
+          <BookTourButton
+            tourId={tour._id!}
+            tourName={tour.name}
+            price={tour.price}
+            variant="card"
+          />
         </div>
       </div>
     </article>

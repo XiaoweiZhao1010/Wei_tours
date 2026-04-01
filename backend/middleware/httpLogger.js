@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const pinoHttp = require("pino-http");
 const logger = require("../utils/logger"); // no .js needed
 

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signup, getMe } from "@/lib/auth";
+import { signup, getMe, type AuthUser } from "@/lib/auth";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/components/AuthContextProvider/contextProvider";
 
@@ -17,7 +17,15 @@ export default function SignupPage() {
     email: "",
     password: "",
     passwordConfirm: "",
+    role: "user" as AuthUser["role"],
   });
+
+  const roleOptions: { value: AuthUser["role"]; label: string }[] = [
+    { value: "user", label: "User" },
+    { value: "guide", label: "Guide" },
+    { value: "lead-guide", label: "Lead guide" },
+    { value: "admin", label: "Admin" },
+  ];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,6 +44,7 @@ export default function SignupPage() {
         email: form.email,
         password: form.password,
         passwordConfirm: form.passwordConfirm,
+        role: form.role,
       });
       const { user } = await getMe();
       if (user) setUser(user);
@@ -48,7 +57,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-12rem)] ">
+    <div className="min-h-[calc(100vh-20rem)] ">
       <div className="mx-auto flex min-h-[calc(100vh-12rem)] w-100 md:w-150 max-w-md flex-col justify-center px-4 py-12">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -58,7 +67,7 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                Something went wrong with signing up.
+                {error}
               </div>
             )}
 
@@ -123,7 +132,9 @@ export default function SignupPage() {
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-natours focus:outline-none focus:ring-1 focus:ring-natours dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
                 minLength={8}
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Minimum 8 characters</p>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Minimum 8 characters
+              </p>
             </div>
 
             <div>
@@ -144,6 +155,35 @@ export default function SignupPage() {
                 }
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-natours focus:outline-none focus:ring-1 focus:ring-natours dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
               />
+            </div>
+            <div>
+              <label
+                htmlFor="role"
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Account type
+              </label>
+              <select
+                id="role"
+                value={form.role}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    role: e.target.value as AuthUser["role"],
+                  }))
+                }
+                className="w-full rounded-lg border border-gray-300 bg-white px-2 py-2.5 text-gray-900 focus:border-natours focus:outline-none focus:ring-1 focus:ring-natours dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              >
+                {roleOptions.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Tour staff roles can create or manage tours depending on server
+                access rules.
+              </p>
             </div>
 
             <button
@@ -174,7 +214,10 @@ export default function SignupPage() {
         </div>
 
         <p className="mt-6 text-center">
-          <Link href="/" className="text-sm text-gray-500 hover:text-natours dark:text-gray-400 dark:hover:text-natours">
+          <Link
+            href="/"
+            className="text-sm text-gray-500 hover:text-natours dark:text-gray-400 dark:hover:text-natours"
+          >
             ← Back to tours
           </Link>
         </p>

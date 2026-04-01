@@ -1,5 +1,5 @@
 import { getTours } from "@/lib/tours";
-import TourCard from "@/components/TourCard";
+import TourCard from "@/app/TourCard";
 
 export default async function ToursPage() {
   const tours = await getTours();

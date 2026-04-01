@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthContextProvider/contextProvider";
 import { getUserImageUrl } from "@/lib/auth";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 export default function UserHeader() {
   const { user } = useAuth();
@@ -26,12 +27,7 @@ export default function UserHeader() {
           {user.name.split(" ")[0]}
         </span>
       </Link>
-      <Link
-        href="/logout"
-        className="rounded-lg bg-natours px-4 py-2 font-semibold text-white transition-colors hover:bg-natours-dark"
-      >
-        Log out
-      </Link>
+      <LogoutButton variant="solid" />
     </div>
   );
 }

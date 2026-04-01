@@ -36,6 +36,7 @@ export async function signup(params: {
   email: string;
   password: string;
   passwordConfirm: string;
+  role?: AuthUser["role"];
 }): Promise<AuthResponse> {
   const res = await fetch(`${API_BASE}/users/signup`, {
     method: "POST",
@@ -65,7 +66,9 @@ export async function logout(): Promise<void> {
   await fetch(`${API_BASE}/users/logout`, { credentials: "include" });
 }
 
-export async function forgotPassword(email: string): Promise<{ message: string }> {
+export async function forgotPassword(
+  email: string,
+): Promise<{ message: string }> {
   const res = await fetch(`${API_BASE}/users/forgotPassword`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

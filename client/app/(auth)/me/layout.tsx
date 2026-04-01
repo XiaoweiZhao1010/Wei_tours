@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <MeAccountNav />
         </aside>
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="flex min-w-0 flex-1 flex-col">{children}</main>
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContextProvider/contextProvider";
 import { getUserImageUrl } from "@/lib/auth";
 import Image from "next/image";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 export default function MePage() {
   const router = useRouter();
@@ -50,12 +50,7 @@ export default function MePage() {
           </div>
         </div>
         <div className="mt-8">
-          <Link
-            href="/logout"
-            className="text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-          >
-            Log out
-          </Link>
+          <LogoutButton variant="link" />
         </div>
       </div>
     </div>

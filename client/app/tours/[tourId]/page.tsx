@@ -9,6 +9,7 @@ import {
 } from "@/lib/tours";
 import { MapPin, Calendar, TrendingUp, Users, Star, Clock } from "lucide-react";
 import ReviewCard from "@/components/tourpage/ReviewCard";
+import BookTourButton from "@/components/tourpage/BookTourButton";
 import CTASection from "@/components/tourpage/CTASection";
 
 export async function generateMetadata({
@@ -43,7 +44,9 @@ export default async function TourPage({
   if (!tour) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-50 dark:bg-gray-900">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tour not found</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          Tour not found
+        </h1>
         <Link
           href="/tours"
           className="rounded-lg bg-natours px-4 py-2 font-semibold text-white hover:bg-natours-dark"
@@ -69,6 +72,7 @@ export default async function TourPage({
               src={getTourImageUrl(tour.imageCover)}
               alt={tour.name}
               fill
+              loading="eager"
               className="object-cover rounded-xl"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
@@ -105,8 +109,8 @@ export default async function TourPage({
                       <Calendar className="h-5 w-5" />
                     </div>
                     <div>
-<p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-                      Next date
+                      <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
+                        Next date
                       </p>
                       <p className="font-semibold text-gray-900 dark:text-gray-100">
                         {nextDate || "—"}
@@ -165,12 +169,11 @@ export default async function TourPage({
                       / person
                     </span>
                   </p>
-                  <button
-                    type="button"
-                    className="w-full rounded-xl bg-natours py-3.5 text-center text-base font-semibold text-white shadow-md transition-colors hover:bg-natours-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-natours focus-visible:ring-offset-2 dark:ring-offset-gray-800"
-                  >
-                    Book now
-                  </button>
+                  <BookTourButton
+                    tourId={tourId}
+                    tourName={tour.name}
+                    price={tour.price}
+                  />
                 </div>
 
                 {tour.guides && tour.guides.length > 0 && (
@@ -247,7 +250,11 @@ export default async function TourPage({
               )}
 
               {/* Reviews */}
-              <ReviewCard reviews={tour.reviews || []} />
+              <ReviewCard
+                reviews={tour.reviews || []}
+                tourId={tourId}
+                totalCount={tour.ratingsQuantity}
+              />
             </div>
           </div>
         </div>

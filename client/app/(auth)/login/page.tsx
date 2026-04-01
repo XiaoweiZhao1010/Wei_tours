@@ -2,14 +2,20 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { login, getMe } from "@/lib/auth";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/components/AuthContextProvider/contextProvider";
 import { useToast } from "@/components/TheContextProvider/ToastProvider";
 
+function safeRedirect(path: string | null): string {
+  if (!path || !path.startsWith("/") || path.startsWith("//")) return "/";
+  return path;
+}
+
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
@@ -26,7 +32,7 @@ export default function LoginPage() {
       const { user } = await getMe();
       if (user) setUser(user);
       showToast("Logged in successfully", 3000);
-      router.push("/");
+      router.push(safeRedirect(searchParams.get("redirect")));
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

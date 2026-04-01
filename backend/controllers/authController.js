@@ -89,6 +89,7 @@ exports.protect = async (req, res, next) => {
   }
   // 2) Verify token
   console.log("Authorization:", req.headers.authorization);
+  console.log("Authorization:", req.cookies?.jwt);
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
@@ -131,10 +132,9 @@ exports.forgotPassword = async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
   // Send link to frontend reset page (set FRONTEND_URL in env, e.g. http://localhost:4000)
-  const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:3001").replace(
-    /\/$/,
-    "",
-  );
+  const frontendUrl = (
+    process.env.FRONTEND_URL || "http://localhost:3001"
+  ).replace(/\/$/, "");
   const resetPageUrl = `${frontendUrl}/resetPassword/${resetToken}`;
   const message = `Forgot your password? Open this link to set a new password (valid for 10 minutes):\n\n${resetPageUrl}\n\nIf you did not request this, ignore this email.`;
   try {
